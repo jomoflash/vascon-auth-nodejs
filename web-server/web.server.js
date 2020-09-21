@@ -7,12 +7,12 @@ router.get('', (req, res) => {
     res.render('index')
 });
 
-router.get('/help', (req, res) => {
-    res.render('help')
+router.get('/login', (req, res) => {
+    res.render('login')
 });
 
-router.get('/about', (req, res) => {
-    res.render('about')
+router.get('/signup', (req, res) => {
+    res.render('signup')
 });
 
 
