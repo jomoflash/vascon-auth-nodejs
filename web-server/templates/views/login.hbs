@@ -26,16 +26,18 @@
                         Login
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form method="POST">
                             <div class="form-group">
                                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
-                                    placeholder="Email">
+                                    placeholder="Email" name="email"
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" id="password" placeholder="Password">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Submit</button>
                         </form>
+
+                        <p></p>
                     </div>
                 </div>
 
@@ -53,6 +55,48 @@
 
 
     <script src="/js/main.js"></script>
+
+    
+    <script>
+        //script for handling the login operation
+        const email_input = document.getElementById('email');
+        const password_input = document.getElementById('password');
+        const p = document.querySelector('p');
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            //fetch
+            const url = 'http://localhost:5000';
+            const route = '/user/login'
+
+            const username = email_input.value;
+            const password = password_input.value;
+
+            if(!username && !password) {
+                return (p.innerText = 'Email or Password is required');
+            }
+            reqbody = {username, password};
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reqbody)
+            }
+
+            const response = await fetch((url+route), options)
+            const resJson = await response.json();
+            console.log(resJson);
+
+            if (resJson.status == 'failed') {
+                p.innerText = resJson.msg;
+            }
+
+        })
+    </script>
 </body>
 
 </html>

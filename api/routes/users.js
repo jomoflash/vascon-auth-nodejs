@@ -82,20 +82,20 @@ router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     if (!username && !password) {
-        return res.json({ err: 'Username or password is required' });
+        return res.json({ status: 'failed', msg: 'Username or password is required' });
     }
 
     // validate supplied credentials
     const validate = validate_login(req.body);
     if (validate.fails()) {
-        return res.status(401).json({ msg: "failed to login", err: validate.errors })
+        return res.status(401).json({ staus: 'failed', msg: "failed to login - invalid username or password", err: validate.errors })
     }
 
     // fetch user data
     queries.user.getByUsername(username)
         .then(data => {
             if (!data) {
-                return res.json({ status: 'No record found' })
+                return res.json({ status: 'failed', msg: 'No record found' })
             }
 
             //check that password matches

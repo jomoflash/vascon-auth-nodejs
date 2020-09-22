@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const userUtil = require('../api/routes/users')
 
 router.get('', (req, res) => {
     // res.status(200).json({'data': 'Welcome to this page'});
@@ -14,6 +15,10 @@ router.get('/login', (req, res) => {
 router.get('/signup', (req, res) => {
     res.render('signup')
 });
+
+router.post('/login', (req, res) => {
+    
+})
 
 
 
