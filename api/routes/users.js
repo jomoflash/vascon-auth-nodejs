@@ -15,17 +15,17 @@ router.post('/', (req, res,) => {
     //Ensure required fields are entered
     const { username, password, } = req.body;
     if (!username && !password) {
-        return res.json({ err: 'Username or password is required' });
+        return res.json({ status: 'failed', msg: 'Username or password is required' });
     }
     //validate
     const validate = validate_new(req.body);
     if (validate.fails()) {
-        return res.status(401).json({ status: 'Failed', err: validate.errors });
+        return res.status(401).json({ status: 'failed', msg: 'Invalid username or password', err: validate.errors });
     }
     //check if username or email alredy exist
     queries.user.getByUsername(username)
         .then(value => {
-            if (value) return res.status(401).json({ status: `failed : email ${username} already exist` });
+            if (value) return res.status(401).json({ status: 'failed', msg: `email ${username} already exist` });
 
             // hash the password
             const data = req.body;
@@ -33,11 +33,11 @@ router.post('/', (req, res,) => {
 
             // insert the data
             queries.user.create(data)
-                .then(val => res.status(201).json({ status: 'success', val }))
-                .catch(err => res.status(500).json(err));
+                .then(val => res.status(201).json({ status: 'success', val, msg: 'Account created successfuly'}))
+                .catch(err => res.status(500).json({status:'failed', msg:'failed to add data', err}));
         })
         .catch(err => {
-            return res.status(500).json({ status: 'Inernal server error', err });
+            return res.status(500).json({ status:'failed', msg: 'Inernal server error', err });
         });
 });
 
@@ -50,7 +50,7 @@ router.put('/', auth.authenticateToken, (req, res) => {
             const newData = req.body;
             const validate = validate_new(newData);
             if (validate.fails()) {
-                return res.status(401).json({ status: 'Failed', err: validate.errors });
+                return res.status(401).json({ status: 'failed', err: validate.errors });
             }
 
             if (newData.password) {
@@ -60,19 +60,19 @@ router.put('/', auth.authenticateToken, (req, res) => {
 
             //check if email is already used
             const data = await queries.user.getByUsername(newData.username);
-            if (data) return res.status(401).json({ status: `failed : email ${username} already exist` });
+            if (data) return res.status(401).json({ status: 'failed', msg: `email ${username} already exist` });
             
             user.newData = newData
             
             queries.user.update(user)
                 .then(val => {
-                    res.status(201).json({ status: 'successfuly updated', val })
+                    res.status(201).json({ status: 'success', msg: 'successfuly updated', val })
                 })
                 .catch(err => {
-                    res.status(500).json({ status: 'update failed', err })
+                    res.status(500).json({ status: 'failed', msg: 'update failed', err })
                 })
         })
-        .catch(err => res.json(err))
+        .catch(err => res.json({status:'failed', msg: 'Database error', err}))
 });
 
 
@@ -88,7 +88,7 @@ router.post('/login', (req, res) => {
     // validate supplied credentials
     const validate = validate_login(req.body);
     if (validate.fails()) {
-        return res.status(401).json({ staus: 'failed', msg: "failed to login - invalid username or password", err: validate.errors })
+        return res.status(401).json({ status: 'failed', msg: "failed to login - invalid username or password", err: validate.errors })
     }
 
     // fetch user data

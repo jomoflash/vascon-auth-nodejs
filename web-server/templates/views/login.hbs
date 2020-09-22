@@ -74,7 +74,7 @@
             const username = email_input.value;
             const password = password_input.value;
 
-            if(!username && !password) {
+            if(!username || !password) {
                 return (p.innerText = 'Email or Password is required');
             }
             reqbody = {username, password};
@@ -91,7 +91,10 @@
             const resJson = await response.json();
             console.log(resJson);
 
-            if (resJson.status == 'failed') {
+            if (resJson.status === 'failed') {
+                p.innerText = resJson.msg;
+            }
+            else if (resJson.status === 'success') {
                 p.innerText = resJson.msg;
             }
 
