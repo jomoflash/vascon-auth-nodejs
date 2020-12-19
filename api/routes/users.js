@@ -101,7 +101,7 @@ router.post('/login', (req, res) => {
             //check that password matches
             if (passwordUtil.equals(password, data.password)) {
                 const token = auth.generateAuthToken(data);
-                return res.status(201).json({ status: 'success', data: data, token });
+                return res.status(201).json({ status: 'success', msg: JSON.stringify(data), data: data, token });
             } else {
                 return res.status(401).json({ status: 'failed', msg: 'Invalid username or password' })
             }
