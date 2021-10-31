@@ -9,7 +9,8 @@ const WebRoutes = require('./web-server/web.server');
 const app = express();
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: false}));
+// app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: false}));
 
 // api routes
 app.use('/user', UserRoutes);
